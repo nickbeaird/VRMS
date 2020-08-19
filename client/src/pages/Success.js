@@ -1,39 +1,30 @@
-import React, { useEffect } from "react";
-// import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
 
+import "../sass/Home.scss";
 import "../sass/MagicLink.scss";
 
 const Success = (props) => {
-  console.log("PROPS", props);
-  // const [isLoading, setIsLoading] = useState(false);
-  // const [event, setEvent] = useState([]);
-  // const [isError, setIsError] = useState(null);
-  // const [magicLink, setMagicLink] = useState('https://localhost:3000/api/happyURLfuntime');
+  const eventId = new URLSearchParams(props.location.search).get("eventId");
+  const [event, setEvent] = useState([]);
 
-  // async function fetchData() {
-  //     try {
-  //         const res = await fetch(`http://localhost:4000/api/events/${props.match.params.id}`);
-  //         const resJson = await res.json();
-  //         setEvent(resJson);
-  //     } catch(error) {
-  //         setIsError(error);
-  //         alert(error);
-  //     }
-  // }
+  async function fetchSlackUrl() {
+    try {
+      const res = await fetch(`/api/events/${eventId}`);
+      const resJson = await res.json();
 
-  // useEffect(() => {
-  //     // fetchData();
-  //     // let timer = setTimeout(() => {
-  //     //     props.history.push('/');
-  //     // }, 6000);
+      setEvent(resJson.project.slackUrl);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
-  //     // return () => clearTimeout(timer);
-  // }, []);
+  useEffect(() => {
+    fetchSlackUrl();
+  }, [event]);
 
   return (
     <div className="flex-container">
       <div className="new">
-        {/* <div class="rotated-success"></div> */}
         <div className="new-headers">
           <h3 className="last-row">Success!</h3>
           <h4 className="last-row">Soon, you'll be able to: </h4>
@@ -50,6 +41,9 @@ const Success = (props) => {
             and appreciated.
           </p>
           <p>Have fun tonight!</p>
+          <a href={event} className={`home-button`}>
+            Join us on Slack!
+          </a>
         </div>
       </div>
     </div>
